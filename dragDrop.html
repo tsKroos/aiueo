@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <title>Vue.js + dragdrop</title>
+</head>
+<body>
+    <div id="app" class="container mt-5">
+        <h1>{{ message }}</h1>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr class="thead-dark">
+                    <th>ID</th>
+                    <th>NAME</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr 
+                v-for="(list, index) in lists" 
+                draggable
+                @dragstart="dragList($event, index)"
+                @drop="dropList($event, index)"
+                @dragover.prevent
+                @dragenter.prevent>
+                    <td>{{ list.id }}</td>
+                    <td>{{ list.name }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+<script>
+    const app = new Vue({
+        el: "#app",
+        data:{
+            message: 'DragDrop in vue.js page',
+            lists:[
+                {
+                    id: 1,
+                    name: 'ProductA'
+                },
+                {
+                    id: 2,
+                    name: 'ProductB'
+                },
+                {
+                    id: 3,
+                    name: 'ProductC'
+                },
+                {
+                    id: 4,
+                    name: 'ProductD'
+                },
+                {
+                    id: 5,
+                    name: 'ProductE'
+                }
+            ],
+        },
+        methods:{
+            dragList(event, dragIndex){
+                event.dataTransfer.effectAllowed = 'move'
+                event.dataTransfer.dropEffect = 'move'
+                event.dataTransfer.setData('drag-index', dragIndex)
+            },
+
+            dropList(event, dropIndex){
+                const dragIndex = event.dataTransfer.getData('drag-index')
+                const deleteList = this.lists.splice(dragIndex, 1)
+                this.lists.splice(dropIndex, 0, deleteList[0])
+            }
+        }
+    })
+</script>
+</body>
+</html>
